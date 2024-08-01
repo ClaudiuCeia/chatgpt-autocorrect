@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <title>ChatGPT autocorrect</title>
+</head>
+<body class="bg-slate-300 flex justify-center items-center">
+  <main class="w-4/12 mt-16">
+    <h1 class="py-8 text-lg font-bold">ChatGPT autocorrect</h1>
+    <div class="bg-white shadow rounded-lg w-full">
+      <div class="px-4 py-5 p-6">
+        <h3 class="text-base font-semibold leading-6 text-gray-900">Try it</h3>
+        <div class="mt-2 max-w-xl text-sm text-gray-500">
+          <p>
+            ChatGPT autocorrect automatically corrects your grammar and
+            punctuation mistakes, without further altering your original input.
+            Submit your text below to see it in action.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <form
+            class="mt-5 flex flex-col items-center"
+            action="/"
+            method="POST"
+            id="autocorrect-form"
+          >
+            <div class="w-full">
+              <label for="text" class="sr-only">Content</label>
+              <textarea
+                type="text"
+                name="text"
+                id="text-box"
+                rows="5"
+                class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"
+                placeholder="Type in, or paste, your text content here."
+              ></textarea>
+            </div>
+            <button
+              id="submit-button"
+              disabled="true"
+              type="submit"
+              class="disabled:grayscale mt-3 self-end rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Submit for revision
+            </button>
+          </form>
+          <div class="mt-5 text-sm" id="response-box">
+            {% if sentence and original_sentence %}
+            <div>
+              <p
+                class="text-green cursor-pointer"
+                title="{{ original_sentence }}"
+              >
+                {{ sentence }}
+              </p>
+            </div>
+            {% else %} Waiting for your input... {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", (event) => {
+      const form = document.getElementById("autocorrect-form");
+      const textbox = document.getElementById("text-box");
+      const responseBox = document.getElementById("response-box");
+      const submitButton = document.getElementById("submit-button");
+
+      if (!form || !textbox || !responseBox || !submitButton) {
+        console.error("Critical markup not found.");
+        return;
+      }
+
+      form.addEventListener("submit", (ev) => {
+        responseBox.innerHTML = "Revising your latest input...";
+      });
+
+      textbox.addEventListener("input", (ev) => {
+        const { value } = ev.originalTarget;
+        console.log("got input", value, value.length)
+        if (value.length >= 10) {
+          submitButton.removeAttribute("disabled");
+        } else {
+          submitButton.setAttribute("disabled", "true");
+        }
+      });
+    });
+  </script>
+</body>
